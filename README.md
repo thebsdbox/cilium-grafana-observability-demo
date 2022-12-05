@@ -144,6 +144,19 @@ helm upgrade kube-prometheus prometheus-community/kube-prometheus-stack \
    --values helm/prometheus-values.yaml
 ```
 
+### Apply the ingress configuration
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/thebsdbox/cilium-grafana-observability-demo/main/manifests/ingress.yaml
+```
+You should be able to see the ingress Address with `kubectl`:
+
+```
+kubectl get ingress -A
+NAMESPACE     NAME                          CLASS    HOSTS                                                                   ADDRESS         PORTS   AGE
+monitoring    kube-prometheus-grafana       cilium   grafana.127-0-0-1.sslip.io,prometheus.127-0-0-1.sslip.io + 1 more...    172.18.100.11   80      18m
+```
+
 Now you should be able to visit Grafana in your browser at <http://grafana.127-0-0-1.sslip.io> with the username `admin`, password `password`.
 
 > **Note**
