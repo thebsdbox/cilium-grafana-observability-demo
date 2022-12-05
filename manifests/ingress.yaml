@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: cilium
   rules:
-    - host: "grafana.fnnrn.me"
+    - host: "grafana.fnnrn.me" #Change these to match your own needs"
       http:
         paths:
         - pathType: Prefix
