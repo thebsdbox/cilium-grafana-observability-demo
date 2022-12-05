@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kube-prometheus-grafana
+  namespace: monitoring
+spec:
+  ingressClassName: cilium
+  rules:
+    - host: "grafana.fnnrn.me"
+      http:
+        paths:
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: kube-prometheus-grafana
+              port:
+                number: 80
+    - host: "prometheus.127-0-0-1.sslip.io"
+      http:
+        paths:
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: prometheus-k8s-prometheus
+              port:
+                number: 80
+    - host: "alertmanager.127-0-0-1.sslip.io"
+      http:
+        paths:
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: prometheus-k8s-alertmanager
+              port:
+                number: 80
