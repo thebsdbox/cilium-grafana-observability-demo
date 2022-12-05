@@ -67,9 +67,19 @@ kubectl create ns monitoring
 In this demo, we will be deploying Cilium, Ingress-nginx, Prometheus, Tempo, and Grafana.
 Afterwards we will install the Isovalent "jobs-app" for demoing the Hubble HTTP metrics.
 
+
+### Load Balancer Install
+
+```
+kubectl apply -f https://kube-vip.io/manifests/rbac.yaml
+kubectl create configmap --namespace kube-system kubevip --from-literal range-global=172.18.100.10-172.18.100.30
+kubectl apply -f https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml
+docker run --network host --rm ghcr.io/kube-vip/kube-vip:v0.5.7 manifest daemonset --services --inCluster --arp --interface eth0 | kubectl apply -f -
+```
+
 ### Cilium Install
 
-Next, let's install Cilium:
+Next, let's install Cilium (with ingress Controller enabled):
 
 ```bash
 # masterIP is needed for kubeProxyReplacement
@@ -83,6 +93,7 @@ helm upgrade cilium cilium/cilium \
   --set kubeProxyReplacement=strict \
   --set k8sServiceHost="${MASTER_IP}" \
   --set k8sServicePort=6443
+  --set ingressController.enabled=true
 ```
 
 Next, check the pods, and run the `cilium status` once everything is `Running`:
@@ -90,19 +101,6 @@ Next, check the pods, and run the `cilium status` once everything is `Running`:
 ```bash
 kubectl get pods -n kube-system
 cilium status --wait
-```
-
-### ingress-nginx install
-
-We use ingress-nginx to access Grafana.
-
-```bash
-helm upgrade ingress-nginx ingress-nginx/ingress-nginx \
-  --install \
-  --wait \
-  --namespace ingress-nginx --create-namespace \
-  --version 4.1.3 \
-  --values helm/ingress-nginx-values.yaml
 ```
 
 ### OpenTelemetry operator and collector
