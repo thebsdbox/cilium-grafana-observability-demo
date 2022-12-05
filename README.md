@@ -92,7 +92,7 @@ helm upgrade cilium cilium/cilium \
   --values helm/cilium-values.yaml \
   --set kubeProxyReplacement=strict \
   --set k8sServiceHost="${MASTER_IP}" \
-  --set k8sServicePort=6443
+  --set k8sServicePort=6443 \
   --set ingressController.enabled=true
 ```
 
